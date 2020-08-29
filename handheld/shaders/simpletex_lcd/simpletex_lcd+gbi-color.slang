@@ -123,6 +123,7 @@ const float INV_BG_TEXTURE_SIZE = 1.0 / BG_TEXTURE_SIZE;
 // Colour correction
 #define TARGET_GAMMA 1.961
 const float INV_DISPLAY_GAMMA = 1.0 / 2.2;
+#define CC_LUM 1.0
 #define CC_R 0.931954
 #define CC_G 0.763927
 #define CC_B 0.939047
@@ -146,10 +147,10 @@ void main()
 	vec3 colour = texture(Source, registers.SourceSize.zw * imgCenterCoord.xy).rgb;
 
 	// Darken colours (if required...) and apply colour correction
-	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 0.5 + registers.DARKEN_COLOUR));
+	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 1.0 + registers.DARKEN_COLOUR));
 	colour.rgb = mat3(CC_R,  CC_RG, CC_RB,
 							CC_GR, CC_G,  CC_GB,
-							CC_BR, CC_BG, CC_B) * colour.rgb;
+							CC_BR, CC_BG, CC_B) * (colour.rgb * CC_LUM);
 	colour.rgb = clamp(pow(colour.rgb, vec3(INV_DISPLAY_GAMMA)), 0.0, 1.0);
 
 	// Generate grid pattern...

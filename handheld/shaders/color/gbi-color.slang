@@ -20,9 +20,9 @@ layout(std140, set = 0, binding = 0) uniform UBO
    License: Public domain
 */
 
-// Shader that replicates the LCD dynamics from a Nintendo DS Phat
+// Shader that replicates the LCD dynamics from a Nintendo DS Phat --
 
-#pragma parameter darken_screen "Darken Screen" 0.5 -0.25 1.5 0.05
+#pragma parameter darken_screen "Darken Screen" 1.0 -0.25 1.0 0.05
 
 #define target_gamma 1.961
 #define display_gamma 2.2
@@ -43,6 +43,20 @@ layout(std140, set = 0, binding = 0) uniform UBO
 #define bg 0.188681
 #define overscan_percent_x 0.0
 #define overscan_percent_y 0.0
+
+/*
+White-NDS
+#define lum 0.98
+#define r 0.83
+#define g 0.625
+#define b 0.785
+#define rg 0.07
+#define rb 0.075
+#define gr 0.22
+#define gb 0.155
+#define br -0.13
+#define bg 0.22
+*/
 
 #pragma stage vertex
 layout(location = 0) in vec4 Position;
