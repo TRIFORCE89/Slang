@@ -9,7 +9,7 @@ layout(push_constant) uniform Push
 	float intensity;
 } params;
 
-#pragma parameter intensity "NTSC Intensity" 1.0 0.0 1.0 0.05
+#pragma parameter intensity "NTSC Intensity" 1.0 0.0 1.0 0.01
 
 layout(std140, set = 0, binding = 0) uniform UBO
 {
