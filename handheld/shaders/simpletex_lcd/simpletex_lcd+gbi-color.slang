@@ -2,7 +2,7 @@
 
 /*
 	simpletex_lcd+gbi-color - a simple, textured LCD shader intended for non-backlit
-	systems - includes GBA colour correction
+	systems - includes GBI colour correction
 
 	- Makes use of the 'line weighting' equation from zfast_lcd_standard
 	  [original zfast_lcd_standard code copyright (C) 2017 Greg Hogan (SoltanGris42)]
@@ -147,7 +147,7 @@ void main()
 	vec3 colour = texture(Source, registers.SourceSize.zw * imgCenterCoord.xy).rgb;
 
 	// Darken colours (if required...) and apply colour correction
-	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 1.0 + registers.DARKEN_COLOUR));
+	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 0.25 + registers.DARKEN_COLOUR));
 	colour.rgb = mat3(CC_R,  CC_RG, CC_RB,
 							CC_GR, CC_G,  CC_GB,
 							CC_BR, CC_BG, CC_B) * (colour.rgb * CC_LUM);

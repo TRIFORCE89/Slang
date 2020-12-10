@@ -2,7 +2,7 @@
 
 /*
 	simpletex_lcd_720p+gbi-color - a simple, textured LCD shader intended for non-backlit systems.
-	Designed for use at 720p, without integer scaling. Includes GBA colour correction.
+	Designed for use at 720p, without integer scaling. Includes GBI colour correction.
 
 	- Makes use of grid effect from lcd3x
 	  [original lcd3x code written by Gigaherz and released into the public domain]
@@ -146,7 +146,7 @@ void main()
 	vec3 colour = texture(Source, registers.SourceSize.zw * imgCenterCoord.xy).rgb;
 
 	// Darken colours (if required...) and apply colour correction
-	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 1.0 + registers.DARKEN_COLOUR));
+	colour.rgb = pow(colour.rgb, vec3(TARGET_GAMMA + 0.25 + registers.DARKEN_COLOUR));
 	colour.rgb = mat3(CC_R,  CC_RG, CC_RB,
 							CC_GR, CC_G,  CC_GB,
 							CC_BR, CC_BG, CC_B) * (colour.rgb * CC_LUM);
