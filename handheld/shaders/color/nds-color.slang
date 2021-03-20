@@ -17,7 +17,7 @@ layout(std140, set = 0, binding = 0) uniform UBO
 // Shader that replicates the LCD dynamics from a Nintendo DS Phat --
 
 #define target_gamma 1.91
-#define display_gamma 1.91
+#define display_gamma 2.2
 #define sat 1.0
 #define lum 0.89
 #define contrast 1.0
@@ -71,13 +71,13 @@ void main()
    vec4 screen = pow(texture(Source, vTexCoord), vec4(target_gamma)).rgba;
    vec4 avglum = vec4(0.5);
    screen = mix(screen, avglum, (1.0 - contrast));
-   
+
  //				r   g    b   black
 mat4 color = mat4(r,  rg,  rb, 0.0,  //red channel
 			   gr,  g,   gb, 0.0,  //green channel
 			   br,  bg,  b,  0.0,  //blue channel
 			  blr, blg, blb,    0.0); //alpha channel; these numbers do nothing for our purposes.
-			  
+
 mat4 adjust = mat4((1.0 - sat) * 0.3086 + sat, (1.0 - sat) * 0.3086, (1.0 - sat) * 0.3086, 1.0,
 (1.0 - sat) * 0.6094, (1.0 - sat) * 0.6094 + sat, (1.0 - sat) * 0.6094, 1.0,
 (1.0 - sat) * 0.0820, (1.0 - sat) * 0.0820, (1.0 - sat) * 0.0820 + sat, 1.0,
