@@ -59,7 +59,7 @@
 #pragma parameter GRID_WIDTH "Grid Width" 0.9 0.0 1.0 0.01
 #pragma parameter GRID_BIAS "Grid Bias" 0.5 0.0 1.0 0.01
 #pragma parameter DARKEN_GRID "Darken Grid" 0.0 0.0 1.0 0.01
-#pragma parameter DARKEN_COLOUR "Darken Colours" 0.0 0.0 2.0 0.01
+#pragma parameter DARKEN_COLOUR "Darken Colours" 0.0 0.0 2.0 0.0001
 
 layout(push_constant) uniform Push
 {
