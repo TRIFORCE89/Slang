@@ -29,8 +29,8 @@ layout(std140, set = 0, binding = 0) uniform UBO
 	vec4 SourceSize;
 } global;
 
-#pragma parameter CRTgamma "CRTGeom Target Gamma" 2.4 0.1 5.0 0.1
-#pragma parameter monitorgamma "CRTGeom Monitor Gamma" 2.2 0.1 5.0 0.1
+#pragma parameter CRTgamma "CRTGeom Target Gamma" 2.4 0.1 5.0 0.001
+#pragma parameter monitorgamma "CRTGeom Monitor Gamma" 2.2 0.1 5.0 0.001
 #pragma parameter d "CRTGeom Distance" 1.5 0.1 3.0 0.1
 #pragma parameter CURVATURE "CRTGeom Curvature Toggle" 1.0 0.0 1.0 1.0
 #pragma parameter R "CRTGeom Curvature Radius" 2.0 0.1 10.0 0.1
@@ -116,7 +116,7 @@ float intersect(vec2 xy)
     float A = dot(xy,xy) + registers.d*registers.d;
     float B = 2.0*(registers.R*(dot(xy,sinangle)-registers.d*cosangle.x*cosangle.y)-registers.d*registers.d);
     float C = registers.d*registers.d + 2.0*registers.R*registers.d*cosangle.x*cosangle.y;
-    
+
     return (-B-sqrt(B*B-4.0*A*C))/(2.0*A);
 }
 
@@ -125,16 +125,16 @@ vec2 bkwtrans(vec2 xy)
     float c     = intersect(xy);
     vec2 point  = (vec2(c, c)*xy - vec2(-registers.R, -registers.R)*sinangle) / vec2(registers.R, registers.R);
     vec2 poc    = point/cosangle;
-    
+
     vec2 tang   = sinangle/cosangle;
     float A     = dot(tang, tang) + 1.0;
     float B     = -2.0*dot(poc, tang);
     float C     = dot(poc, poc) - 1.0;
-    
+
     float a     = (-B + sqrt(B*B - 4.0*A*C))/(2.0*A);
     vec2 uv     = (point - a*sinangle)/cosangle;
     float r     = FIX(registers.R*acos(a));
-    
+
     return uv*r/sin(r/registers.R);
 }
 
@@ -144,7 +144,7 @@ vec2 fwtrans(vec2 uv)
     uv *= sin(r/registers.R)/r;
     float x = 1.0-cos(r/registers.R);
     float D = registers.d/registers.R + x*cosangle.x*cosangle.y+dot(uv,sinangle);
-    
+
     return registers.d*(uv*cosangle-x*sinangle)/D;
 }
 
@@ -152,13 +152,13 @@ vec3 maxscale()
 {
     vec2 c  = bkwtrans(-registers.R * sinangle / (1.0 + registers.R/registers.d*cosangle.x*cosangle.y));
     vec2 a  = vec2(0.5,0.5)*aspect;
-    
+
     vec2 lo = vec2(fwtrans(vec2(-a.x,  c.y)).x,
                    fwtrans(vec2( c.x, -a.y)).y)/aspect;
 
     vec2 hi = vec2(fwtrans(vec2(+a.x,  c.y)).x,
                    fwtrans(vec2( c.x, +a.y)).y)/aspect;
-    
+
     return vec3((hi+lo)*aspect*0.5,max(hi.x-lo.x,hi.y-lo.y));
 }
 
@@ -173,7 +173,7 @@ void main()
     cosangle    = cos(vec2(registers.x_tilt, registers.y_tilt));
     stretch     = maxscale();
     TextureSize = vec2(registers.SHARPER * SourceSize.x, SourceSize.y);
-    
+
     ilfac = vec2(1.0, clamp(floor(SourceSize.y/200.0),  1.0, 2.0));
 
     // The size of one texel, in texture-coordinates.
@@ -200,7 +200,7 @@ float intersect(vec2 xy)
     float A = dot(xy,xy) + registers.d*registers.d;
     float B = 2.0*(registers.R*(dot(xy,sinangle) - registers.d*cosangle.x*cosangle.y) - registers.d*registers.d);
     float C = registers.d*registers.d + 2.0*registers.R*registers.d*cosangle.x*cosangle.y;
-    
+
     return (-B-sqrt(B*B - 4.0*A*C))/(2.0*A);
 }
 
@@ -218,7 +218,7 @@ vec2 bkwtrans(vec2 xy)
     float a     = (-B + sqrt(B*B - 4.0*A*C)) / (2.0*A);
     vec2 uv     = (point - a*sinangle) / cosangle;
     float r     = FIX(registers.R*acos(a));
-    
+
     return uv*r/sin(r/registers.R);
 }
 
@@ -273,15 +273,15 @@ vec4 scanlineWeights(float distance, vec4 color)
     return (registers.lum + 1.4) * exp(-pow(weights * inversesqrt(0.5 * wid), wid)) / (0.6 + 0.2 * wid);
 #endif
 }
-    
+
 vec2 transform(vec2 coord)
 {
     coord = (coord - vec2(0.5, 0.5))*aspect*stretch.z + stretch.xy;
-    
+
     return (bkwtrans(coord) /
         vec2(registers.overscan_x / 100.0, registers.overscan_y / 100.0)/aspect + vec2(0.5, 0.5));
 }
-    
+
 float corner(vec2 coord)
 {
     coord = (coord - vec2(0.5)) * vec2(registers.overscan_x / 100.0, registers.overscan_y / 100.0) + vec2(0.5, 0.5);
@@ -289,10 +289,10 @@ float corner(vec2 coord)
     vec2 cdist = vec2(registers.cornersize);
     coord = (cdist - min(coord, cdist));
     float dist = sqrt(dot(coord, coord));
-    
+
     return clamp((cdist.x - dist)*registers.cornersmooth, 0.0, 1.0);
 }
-    
+
 void main()
 {
     // Here's a helpful diagram to keep in mind while trying to
@@ -327,7 +327,7 @@ void main()
 
     // Of all the pixels that are mapped onto the texel we are
     // currently rendering, which pixel are we currently rendering?
-    
+
     vec2 ilvec = vec2(0.0, ilfac.y * registers.interlace_detect > 1.5 ? mod(float(registers.FrameCount), 2.0) : 0.0);
 
     vec2 ratio_scale = (xy * TextureSize - vec2(0.5, 0.5) + ilvec) / ilfac;
@@ -401,7 +401,7 @@ void main()
         vec3(1.0 - registers.DOTMASK, 1.0, 1.0 - registers.DOTMASK),
         floor(mod(gl_FragCoord.x, 2.0))
     );
-      
+
     mul_res *= dotMaskWeights;
 
     // Convert the image gamma for display on our output device.
